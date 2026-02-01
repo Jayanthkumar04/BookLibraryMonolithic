@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.org.jayanth.dto.GenericSucessResponseDto;
 import com.org.jayanth.entity.User;
 import com.org.jayanth.service.UserService;
 
@@ -48,7 +49,7 @@ public class FirstLoginFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.getWriter().write("You must change your password before accessing this resource.");
             return;
-        }
+            }
 
         filterChain.doFilter(request, response);
     }

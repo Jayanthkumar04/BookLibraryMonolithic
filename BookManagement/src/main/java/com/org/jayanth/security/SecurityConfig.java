@@ -95,7 +95,6 @@ public class SecurityConfig {
                     "/swagger-ui.html"
             		).permitAll()
             .requestMatchers("/api/admin/**").hasRole("ADMIN")
-//            .requestMatchers("/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
             .anyRequest().authenticated()
         );
 

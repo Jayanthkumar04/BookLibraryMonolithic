@@ -29,6 +29,15 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
+//    JWT contains:
+//
+//    	Subject → email
+//
+//    	Role → USER / ADMIN
+//
+//    	Expiry
+//
+//    	Signature
     // Generate token using subject (email) and role
     public String generateToken(String subject, Role role) {
         Claims claims = Jwts.claims().setSubject(subject);

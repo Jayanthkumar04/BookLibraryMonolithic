@@ -160,5 +160,14 @@ public class GlobalExceptionHandler {
 		
 	}
 	
+	@ExceptionHandler
+	public ResponseEntity<ErrorDetails> handleIncorrectTokenException(IncorrectTokenException ex)
+	{
+		logger.error("incorrect token");
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"Incorrect token entered");
+		return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+		
+	}
+	
 	
 }
