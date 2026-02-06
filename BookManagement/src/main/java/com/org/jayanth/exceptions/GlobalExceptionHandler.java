@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<ErrorDetails> handleUserNotFound(UserNotFoundException ex)
 	{
-	     logger.error("user not found");
+	    logger.error("user not found");
 		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"user is not found");
 		return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
 		
@@ -168,6 +168,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
 		
 	}
-	
+	@ExceptionHandler
+	public ResponseEntity<ErrorDetails> handleFirstTimeLoginException(FirstTimeLoginException ex)
+	{
+		logger.warn("user has to change password before using resources");
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"Password is to be reset");
+		return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+		
+	}
 	
 }

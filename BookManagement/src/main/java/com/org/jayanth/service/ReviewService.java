@@ -3,6 +3,7 @@ package com.org.jayanth.service;
 import java.util.List;
 
 import com.org.jayanth.dto.ReviewDto;
+import com.org.jayanth.dtobestprac.MessageDto;
 import com.org.jayanth.dtobestprac.ReviewResponseDto;
 import com.org.jayanth.entity.Review;
 
@@ -12,7 +13,7 @@ public interface ReviewService {
 
     Review updateReview(String email, Long reviewId, ReviewDto dto);
 
-    void deleteReview(String email, Long reviewId);
+    MessageDto deleteReview(String email, Long reviewId);
 
     List<ReviewResponseDto> getReviewsByBook(Long bookId);
 

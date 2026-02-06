@@ -12,14 +12,14 @@ public interface BookService {
 	
 	Book findBookById(Long bookId);
 	
-	Book updateBook(Long bookId,BookDto dto);
+	BookDto updateBook(Long bookId,BookDto dto);
 	
 	MessageDto deleteBook(Long bookId);
 	
 	boolean existsByIsbn(String isbn);
 	boolean isBookAvailable(Long bookId);
 	Integer getStock(Long bookId);
-	void updateBookStock(Long bookId,Integer quantity);
+	MessageDto updateBookStock(Long bookId,Integer quantity);
 	
 	List<Book> getAllBooks();
     List<Book> findBooksByCategory(Long categoryId);

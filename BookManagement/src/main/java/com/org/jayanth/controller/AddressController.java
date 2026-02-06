@@ -1,6 +1,11 @@
 package com.org.jayanth.controller;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.org.jayanth.dto.AddressDto;
+import com.org.jayanth.dtobestprac.MessageDto;
+import com.org.jayanth.entity.Address;
 import com.org.jayanth.service.AddressService;
 
 @RestController
@@ -23,73 +30,65 @@ public class AddressController {
 	
 	@Autowired
 	private AddressService addressService;
-	
-	/*@AuthenticationPrincipal (correct spelling) is a Spring Security annotation that allows 
-	 * you to directly inject
-	 *  the currently logged-in user (or the principal object) into a controller method.
-	 * 
-	 * When a user logs in using JWT or normal Spring Security, Spring stores a Principal object in the SecurityContext.
 
-Instead of manually extracting email like this:
-	 * 
-	 * String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-	 * 
-	 */
-	
-	private String getEmail()
-	{
-		return SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getName();
-	}
+	private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
 	
 	 @PostMapping
-	    public ResponseEntity<?> addAddress(@RequestBody AddressDto dto ) {
+	    public ResponseEntity<Address> addAddress( @AuthenticationPrincipal(expression = "username") String email, @RequestBody AddressDto dto ) {
 		 
-		   String email = getEmail();
-		 
-	        return ResponseEntity.ok(addressService.addAddress(email, dto));
+		  logger.info("addRequest started {}",email);
+//		   String email = getEmail();
+		  Address address= addressService.addAddress(email, dto);
+			 logger.info("addRequest successfull");
+	        return ResponseEntity.status(HttpStatus.CREATED).body(address);
 	    }
 	 
 	 @GetMapping
-	    public ResponseEntity<?> getAddresses() {
+	    public ResponseEntity<List<Address>> getAddresses(@AuthenticationPrincipal(expression = "username") String email) {
 		  
-		    String email = getEmail();
-		    
-	        return ResponseEntity.ok(addressService.getUserAddresses(email));
+		    logger.info("getAddress request initiated {}",email);
+		    List<Address> address = addressService.getUserAddresses(email);
+		    logger.info("getAddress request successfull");
+		    return ResponseEntity.status(HttpStatus.OK).body(address);
 	    }
 	 
 
 	 @GetMapping("/{id}")
-	    public ResponseEntity<?> getAddresses(@PathVariable Long id) {
+	    public ResponseEntity<Address> getAddresses(@AuthenticationPrincipal(expression = "username") String email,@PathVariable Long id) {
 		  
-		    String email = getEmail();
-		    
-	        return ResponseEntity.ok(addressService.getUserAddressesById(email,id));
+		 logger.info("getAddress by id {} started for {}",id,email);
+		   Address address = addressService.getUserAddressesById(email,id);
+			 logger.info("getAddress by id {} successfull",id);
+	        return ResponseEntity.status(HttpStatus.OK).body(address);
 	    }
 	 
 	 @PutMapping("/{id}")
-	    public ResponseEntity<?> update(@PathVariable Long id, 
-	                                    @RequestBody AddressDto dto
+	    public ResponseEntity<Address> update(@PathVariable Long id, 
+	                                    @RequestBody AddressDto dto,@AuthenticationPrincipal(expression = "username") String email
 	                                  ) {
-		    String email = getEmail();
-	        return ResponseEntity.ok(addressService.updateAddress(email, id, dto));
+		 
+		    logger.info("update address request initiated for ",email );
+		    Address address = addressService.updateAddress(email, id, dto);
+		    logger.info("update address request successfull");
+		   return ResponseEntity.status(HttpStatus.OK).body(address);
 	    }
 	 
 	 @DeleteMapping("/{id}")
-	    public ResponseEntity<?> delete(@PathVariable Long id) {
+	    public ResponseEntity<MessageDto> delete(@AuthenticationPrincipal(expression = "username") String email,@PathVariable Long id) {
 		 
-		 String email = getEmail();
-	        addressService.deleteAddress(email, id);
-	        return ResponseEntity.noContent().build();
+		    logger.info("delete address request initiated");		 
+		    MessageDto message = addressService.deleteAddress(email, id);
+		    logger.info("delete address request successfull");	
+	        return ResponseEntity.status(HttpStatus.OK).body(message);
 	    }
 	 
 	 @PutMapping("/{id}/default")
-	    public ResponseEntity<?> setDefault(@PathVariable Long id) {
+	    public ResponseEntity<Address> setDefault(@AuthenticationPrincipal(expression = "username") String email,@PathVariable Long id) {
 		    
-		 String email = getEmail();
-	        return ResponseEntity.ok(addressService.setDefaultAddress(email, id));
+		    logger.info("set default address request initiated for {}",email);	
+		Address address = addressService.setDefaultAddress(email, id);
+	    logger.info("set default address request is successfull");	
+	        return ResponseEntity.status(HttpStatus.OK).body(address);
 	    }
 	
 	 

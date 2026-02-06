@@ -3,7 +3,10 @@ package com.org.jayanth.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,47 +28,66 @@ import com.org.jayanth.service.CategoryService;
 @RequestMapping("/api/categories")
 public class CategoryController {
 
-	@Autowired
-	private CategoryService categoryService;
-	
-	// CREATE (Admin Only)
+    private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
+
+    @Autowired
+    private CategoryService categoryService;
+
+    // CREATE (Admin Only)
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CategoryDto category) {
+    public ResponseEntity<CategoryDto> create(@RequestBody CategoryDto category) {
+        logger.info("Category creation started");
+
         CategoryDto saved = categoryService.createCategory(category);
-        return ResponseEntity.created(
-                URI.create("/api/categories/" + saved.getName())
-        ).body(saved);
+
+        logger.info("Category created successfully with name: {}", saved.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
-    
- // UPDATE (Admin Only)
+
+    // UPDATE (Admin Only)
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryDto> update(@PathVariable Long id, @RequestBody CategoryDto category) {
-    
-    	return ResponseEntity.ok(categoryService.updateCategory(id, category));
-   
+        logger.info("Category updating started for id: {}", id);
+
+        CategoryDto dto = categoryService.updateCategory(id, category);
+
+        logger.info("Category updated successfully for id: {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
-	
- // DELETE (Admin Only)
+
+    // DELETE (Admin Only)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public MessageDto delete(@PathVariable Long id) {
-        
-    	return categoryService.deleteCategory(id);
-        
+    public ResponseEntity<MessageDto> delete(@PathVariable Long id) {
+        logger.info("Category deletion started for id: {}", id);
+
+        MessageDto message = categoryService.deleteCategory(id);
+
+        logger.info("Category deleted successfully for id: {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
-    
+
     // GET BY ID (Public)
     @GetMapping("/{id}")
-    public CategoryDto getById(@PathVariable Long id) {
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<CategoryDto> getById(@PathVariable Long id) {
+        logger.info("Fetching category by id: {}", id);
+
+        CategoryDto dto = categoryService.getCategoryById(id);
+
+        logger.info("Category fetched successfully for id: {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
-    
- // GET ALL (Public)
+
+    // GET ALL (Public)
     @GetMapping
-    public List<CategoryDto> getAll() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDto>> getAll() {
+        logger.info("Fetching all categories");
+
+        List<CategoryDto> dtos = categoryService.getAllCategories();
+
+        logger.info("Fetched {} categories successfully", dtos.size());
+        return ResponseEntity.status(HttpStatus.OK).body(dtos);
     }
-	
 }

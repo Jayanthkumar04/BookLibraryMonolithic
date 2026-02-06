@@ -113,6 +113,59 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+	<groupId>org.jacoco</groupId>
+	<artifactId>jacoco-maven-plugin</artifactId>
+	<version>0.8.11</version>
+	<configuration>
+		<excludes>
+			<exclude>com/org/jayanth/BookManagementApplication**</exclude>
+<exclude>com/org/jayanth/controller/AuthController*</exclude>
+<exclude>com/org/jayanth/controller/CartController*</exclude>
+<exclude>com/org/jayanth/controller/CategoryController*</exclude>
+<exclude>com/org/jayanth/controller/OrderController*</exclude>
+<exclude>com/org/jayanth/controller/ReviewController*</exclude>
+<exclude>com/org/jayanth/controller/UserController*</exclude>
+<exclude>com/org/jayanth/dto/**</exclude>
+<exclude>com/org/jayanth/dtobestprac/**</exclude>			
+<exclude>com/org/jayanth/entity/**</exclude>
+<exclude>com/org/jayanth/exceptions/**</exclude>
+<exclude>com/org/jayanth/helper/**</exclude>	
+<exclude>com/org/jayanth/repo/**</exclude>	
+<exclude>com/org/jayanth/security/**</exclude>	
+<exclude>com/org/jayanth/service/AuthService</exclude>
+<exclude>com/org/jayanth/service/AuthServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/AddressService</exclude>
+<exclude>com/org/jayanth/service/BookService</exclude>
+<exclude>com/org/jayanth/service/CartService</exclude>
+<exclude>com/org/jayanth/service/CartServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/CategoryService</exclude>
+<exclude>com/org/jayanth/service/CategoryServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/EmailService</exclude>
+<exclude>com/org/jayanth/service/EmailServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/OrderService</exclude>
+<exclude>com/org/jayanth/service/OrderServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/ReviewService</exclude>
+<exclude>com/org/jayanth/service/ReviewServiceImpl*</exclude>
+<exclude>com/org/jayanth/service/UserService</exclude>
+<exclude>com/org/jayanth/service/UserServiceImpl*</exclude>
+		</excludes>
+	</configuration>
+	<executions>
+		<execution>
+			<goals>
+				<goal>prepare-agent</goal>
+			</goals>
+		</execution>
+		<execution>
+			<id>report</id>
+			<phase>test</phase>
+			<goals>
+				<goal>report</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
 		</plugins>
 	</build>
 

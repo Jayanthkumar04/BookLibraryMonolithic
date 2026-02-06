@@ -1,16 +1,11 @@
 package com.org.jayanth.controller;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.org.jayanth.dto.BookDto;
 import com.org.jayanth.dtobestprac.MessageDto;
 import com.org.jayanth.entity.Book;
-import com.org.jayanth.repo.BookRepo;
 import com.org.jayanth.service.BookService;
+
 
 @RestController
 @RequestMapping("api/books")
@@ -39,13 +34,11 @@ public class BookController {
 	  @Autowired
 	  private BookService bookService;
 
-	  @Autowired
-	  private BookRepo bookRepo;
 
 	    // ---------------------- CREATE (ADMIN) ----------------------
 	    @PostMapping
 	    @PreAuthorize("hasRole('ADMIN')")
-	    public ResponseEntity<?> createBook(@RequestBody BookDto dto) {
+	    public ResponseEntity<BookDto> createBook(@RequestBody BookDto dto) {
 	        logger.info("Admin request - create book: {}", dto.getTitle());
 
 
@@ -53,45 +46,52 @@ public class BookController {
 	        // map dto -> entity (simple mapping; use MapStruct if you want)
 	        BookDto created = bookService.addBook(dto);
 		       
-	        
+	        logger.info("Book {} created successfully",dto.getTitle());
 
-	        return ResponseEntity.created(URI.create("/api/books/" + created.getIsbn()))
-	                             .body(created);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	    }
 	    
 	    @PutMapping("/{id}")
 	    @PreAuthorize("hasRole('ADMIN')")
-	    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody BookDto dto) {
+	    public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @RequestBody BookDto dto) {
 	        logger.info("Admin request - update book id: {}", id);
-	        System.out.println("am i cmng");
-	        Book updated = bookService.updateBook(id, dto);
+	       
+	        BookDto updated = bookService.updateBook(id, dto);
 	        
 	        if (updated == null) {
 	            return ResponseEntity.notFound().build();
 	        }
-	        System.out.println(updated);
-	        return ResponseEntity.ok(updated);
+	        
+	        logger.info("Admin request book updated successfully");
+	        
+	        return ResponseEntity.status(HttpStatus.OK).body(updated);
 	    }
 	    
 	    // ---------------------- DELETE (ADMIN) ----------------------
 	    @DeleteMapping("/{id}")
 	    @PreAuthorize("hasRole('ADMIN')")
-	    public MessageDto deleteBook(@PathVariable Long id) {
-	        logger.warn("Admin request - delete book id: {}", id);
-
+	    public ResponseEntity<MessageDto> deleteBook(@PathVariable Long id) {
+	    	logger.info("Admin request - delete book id: {}", id);
+	    	
 	        // prefer logical delete: set isActive=false in service or here
-	        return bookService.deleteBook(id);
+	        
+	        MessageDto response = bookService.deleteBook(id); 
+	        
+	        logger.info("Admin request - book deleted successfully");
+	        return ResponseEntity.status(HttpStatus.OK).body(response);
 	      
 	    }
 	    
 	 // ---------------------- GET BY ID (USER/ADMIN) ----------------------
 	    @GetMapping("/{id}")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> getBookById(@PathVariable Long id) {
+	    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+	    	logger.info("Get Book by Id initiated for book => {}"+id);
 	        Book book = bookService.findBookById(id);
-	        if (book == null) return ResponseEntity.notFound().build();
-	        return ResponseEntity.ok(book);
+	        logger.info("Get book by id request is successfull");
+	        return ResponseEntity.status(HttpStatus.OK).body(book);
 	    }
+	
 	    
 	 // ---------------------- SIMPLE LIST (no pagination) ----------------------
 	    // Use only for small datasets; prefer /paged endpoint below in frontend
@@ -99,11 +99,13 @@ public class BookController {
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	    public ResponseEntity<List<Book>> getAllBooks() {
 	    	
+	    	logger.info("Get all books request initiated");
 	        List<Book> list = bookService.getAllBooks();
-	        
-	        return ResponseEntity.ok(list);
+	        logger.info("Get all books request is successfull");
+	        return ResponseEntity.status(HttpStatus.OK).body(list);
 	    }
 	    
+	    /*
 	 // ---------------------- PAGED LIST (USER/ADMIN) ----------------------
 	    // Example: /api/books?page=0&size=10&sort=title,asc
 	    @GetMapping
@@ -144,39 +146,48 @@ public class BookController {
 
 	        return ResponseEntity.ok(body);
 	    }
+	    
+	    */
 	 // ---------------------- SEARCH (non-paged) ----------------------
 	    @GetMapping("/search")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	    public ResponseEntity<List<Book>> searchBooks(@RequestParam("q") String q) {
+	    	logger.info("search book request has been initiated with keyword {}"+q);
 	        List<Book> res = bookService.searchBooks(q);
-	        return ResponseEntity.ok(res);
+	        logger.info("search book request is successfull");
+	        
+	        return ResponseEntity.status(HttpStatus.OK).body(res);
 	    }
 	 // ---------------------- GET BY AUTHOR ----------------------
 	    @GetMapping("/author")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	    public ResponseEntity<List<Book>> getByAuthor(@RequestParam("name") String author) {
+	    	logger.info("Get book by author request is initiated");
 	        List<Book> res = bookService.getBooksByAuthor(author);
-	        return ResponseEntity.ok(res);
+	        logger.info("Get book by author request is successfull");
+	        return ResponseEntity.status(HttpStatus.OK).body(res);
 	    }
 
 	 // ---------------------- UPDATE STOCK (ADMIN) ----------------------
 	    @PatchMapping("/{id}/stock")
 	    @PreAuthorize("hasRole('ADMIN')")
-	    public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam("qty") Integer qty) {
+	    public ResponseEntity<MessageDto> updateStock(@PathVariable Long id, @RequestParam("qty") Integer qty) {
 	        logger.info("Admin request - update stock bookId={} qty={}", id, qty);
-	        bookService.updateBookStock(id, qty);
-	        return ResponseEntity.ok("Stock updated");
+	        MessageDto dto = bookService.updateBookStock(id, qty);
+	        logger.info("stock updated successfully");
+	        return ResponseEntity.status(HttpStatus.OK).body(dto);
 	    }
 	    
 	    @GetMapping("/category/{id}")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> getBooksByCategory(@PathVariable Long id)
+	    public ResponseEntity<List<Book>> getBooksByCategory(@PathVariable Long id)
 	    {
 	    	logger.info("books by category request - categoryid {}",id);
 	    	
 	    	List<Book> books =   bookService.findBooksByCategory(id);
 	    	
-	    	return ResponseEntity.ok(books);
+	    	logger.info("books by category request - categoryid {} is successfull",id);
+	    	return ResponseEntity.status(HttpStatus.OK).body(books);
 	    }
 	
 }

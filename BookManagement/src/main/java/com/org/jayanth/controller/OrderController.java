@@ -1,22 +1,18 @@
 package com.org.jayanth.controller;
 
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.org.jayanth.dto.PlaceOrderRequestDto;
-import com.org.jayanth.dtobestprac.OrderResponseDto;
+import com.org.jayanth.dtobestprac.MessageDto;
 import com.org.jayanth.entity.Order;
 import com.org.jayanth.entity.OrderStatus;
 import com.org.jayanth.service.OrderService;
@@ -25,71 +21,141 @@ import com.org.jayanth.service.OrderService;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-	
-	@Autowired
-	private OrderService orderService;
-	
-	public String getEmail()
-	{
-		return SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getName();
-		
-	}
-	
+    private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-	 @PostMapping("/place")
-	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public  ResponseEntity<String> placeOrder(
-	            @RequestBody PlaceOrderRequestDto request) {
-               
-		 String email = getEmail();
-	        OrderResponseDto order = orderService.placeOrder(email, request.getAddressId());
-//	        return ResponseEntity.ok(order);
-	       return ResponseEntity.ok("order placed successfully");  
-	 }
-	 
-	 @GetMapping("/my")
-	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> getMyOrders() {
-		 String email = getEmail();
-	        return ResponseEntity.ok(orderService.getMyOrders(email));
-	    }
-	 
-	 @GetMapping("/id/{orderId}")
-	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> getOrderById(
-	            @PathVariable Long orderId) {
+    @Autowired
+    private OrderService orderService;
 
-	        return ResponseEntity.ok(orderService.getOrderById(orderId, getEmail()));
-	    }
-	
-	// ---------------- ADMIN ----------------
+    private String getEmail() {
+        return SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+    }
 
-	    @GetMapping
-	    @PreAuthorize("hasRole('ADMIN')")
-	    public ResponseEntity<?> getAllOrders() {
-	        return ResponseEntity.ok(orderService.getAllOrders());
-	    }
+    // ---------------- PLACE ORDER ----------------
+    @PostMapping("/place")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<MessageDto> placeOrder(
+            @RequestBody PlaceOrderRequestDto request) {
 
-	    @PutMapping("/{orderId}/status")
-	    @PreAuthorize("hasRole('ADMIN')")
-	    public ResponseEntity<?> updateStatus(
-	            @PathVariable Long orderId,
-	            @RequestParam OrderStatus status) {
+        String email = getEmail();
 
-	        return ResponseEntity.ok(orderService.updateOrderStatus(orderId, status));
-	    }
-	
-	    @PutMapping("/{orderId}/cancel")
-	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
+        logger.info(
+                "Place order request initiated | user={} addressId={}",
+                email, request.getAddressId()
+        );
 
-	        String email = getEmail();
-	        
-	        Order cancelledOrder = orderService.cancelOrder(orderId, email);
-	        
-	        return ResponseEntity.ok(cancelledOrder);
-	    }
-	    
+        MessageDto response = orderService.placeOrder(email, request.getAddressId());
+
+        logger.info(
+                "Place order request successful | user={}",
+                email
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // ---------------- GET MY ORDERS ----------------
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<List<Order>> getMyOrders() {
+
+        String email = getEmail();
+
+        logger.info(
+                "Get my orders request initiated | user={}",
+                email
+        );
+
+        List<Order> orders = orderService.getMyOrders(email);
+
+        logger.info(
+                "Get my orders request successful | user={} totalOrders={}",
+                email, orders.size()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+    // ---------------- GET ORDER BY ID ----------------
+    @GetMapping("/id/{orderId}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<Order> getOrderById(
+            @PathVariable Long orderId) {
+
+        logger.info(
+                "Get order by id request initiated | orderId={} user={}",
+                orderId, getEmail()
+        );
+
+        Order order = orderService.getOrderById(orderId, getEmail());
+
+        logger.info(
+                "Get order by id request successful | orderId={}",
+                orderId
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(order);
+    }
+
+    // ---------------- ADMIN: GET ALL ORDERS ----------------
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Order>> getAllOrders() {
+
+        logger.info("Admin request - get all orders initiated");
+
+        List<Order> orders = orderService.getAllOrders();
+
+        logger.info(
+                "Admin request - get all orders successful | totalOrders={}",
+                orders.size()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(orders);
+    }
+
+    // ---------------- ADMIN: UPDATE ORDER STATUS ----------------
+    @PutMapping("/{orderId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Order> updateStatus(
+            @PathVariable Long orderId,
+            @RequestParam OrderStatus status) {
+
+        logger.info(
+                "Admin request - update order status initiated | orderId={} status={}",
+                orderId, status
+        );
+
+        Order order = orderService.updateOrderStatus(orderId, status);
+
+        logger.info(
+                "Admin request - update order status successful | orderId={} status={}",
+                orderId, status
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(order);
+    }
+
+    // ---------------- CANCEL ORDER ----------------
+    @PutMapping("/{orderId}/cancel")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<Order> cancelOrder(@PathVariable Long orderId) {
+
+        String email = getEmail();
+
+        logger.info(
+                "Cancel order request initiated | orderId={} user={}",
+                orderId, email
+        );
+
+        Order cancelledOrder = orderService.cancelOrder(orderId, email);
+
+        logger.info(
+                "Cancel order request successful | orderId={} user={}",
+                orderId, email
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(cancelledOrder);
+    }
 }
