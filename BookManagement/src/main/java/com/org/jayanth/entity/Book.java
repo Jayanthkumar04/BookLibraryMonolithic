@@ -75,26 +75,7 @@ public class Book {
 		this.reviews = reviews;
 	}
 
-	public Book(Long id, String title, String description, String author, Double price, Double discount, String isbn,
-			Integer stock, boolean isActive, Category category, List<String> imageUrls, List<Review> reviews,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.author = author;
-		this.price = price;
-		this.discount = discount;
-		this.isbn = isbn;
-		this.stock = stock;
-		this.isActive = isActive;
-		this.category = category;
-		this.imageUrls = imageUrls;
-		this.reviews = reviews;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
+	
 	private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -110,27 +91,8 @@ public class Book {
 
 	public Book() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public Book(Long id, String title, String description, String author, Double price, Double discount, String isbn,
-			Integer stock, boolean isActive, Category category, List<String> imageUrls, LocalDateTime createdAt,
-			LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.author = author;
-		this.price = price;
-		this.discount = discount;
-		this.isbn = isbn;
-		this.stock = stock;
-		this.isActive = isActive;
-		this.category = category;
-		this.imageUrls = imageUrls;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
 
 	public Long getId() {
 		return id;

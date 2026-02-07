@@ -10,7 +10,6 @@ public class CartItemDto {
     private Double subTotal;
 	public CartItemDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public CartItemDto(Long cartItemId, Long bookId, String bookTitle, Double price, Integer quantity,
 			Double subTotal) {

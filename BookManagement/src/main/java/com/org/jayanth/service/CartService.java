@@ -10,7 +10,7 @@ public interface CartService {
 
 	Cart updateItem(String email,Long cartItemId,int quantity);
 	
-	Cart removeItem(String email,Long ItemId);
+	Cart removeItem(String email,Long itemId);
 	
 	Cart clearCart(String email);
 	

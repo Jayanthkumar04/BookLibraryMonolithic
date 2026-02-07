@@ -1,8 +1,5 @@
 package com.org.jayanth.entity;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,8 +34,7 @@ public class OrderItem {
 
 	public OrderItem() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 
 	public OrderItem(Long id, Order order, Book book, Integer quantity, Double price, Double subtotal) {
 		super();

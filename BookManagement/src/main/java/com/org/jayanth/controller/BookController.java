@@ -86,7 +86,7 @@ public class BookController {
 	    @GetMapping("/{id}")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-	    	logger.info("Get Book by Id initiated for book => {}"+id);
+	    	logger.info("Get Book by Id initiated for book => {}",id);
 	        Book book = bookService.findBookById(id);
 	        logger.info("Get book by id request is successfull");
 	        return ResponseEntity.status(HttpStatus.OK).body(book);
@@ -105,54 +105,11 @@ public class BookController {
 	        return ResponseEntity.status(HttpStatus.OK).body(list);
 	    }
 	    
-	    /*
-	 // ---------------------- PAGED LIST (USER/ADMIN) ----------------------
-	    // Example: /api/books?page=0&size=10&sort=title,asc
-	    @GetMapping
-	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-	    public ResponseEntity<?> getBooksPaged(
-	            @RequestParam(value = "page", defaultValue = "0") int page,
-	            @RequestParam(value = "size", defaultValue = "10") int size,
-	            @RequestParam(value = "sort", defaultValue = "id,desc") String sort, // format: field,dir
-	            @RequestParam(value = "keyword", required = false) String keyword,
-	            @RequestParam(value = "categoryId", required = false) Long categoryId
-	    ) {
-	        // parse sort param
-	        String[] sortParts = sort.split(",");
-	        Sort.Direction dir = sortParts.length > 1 && sortParts[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-	        String sortBy = sortParts[0];
-
-	        Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
-
-	        Page<Book> result;
-
-	        if (keyword != null && !keyword.isBlank()) {
-	            result = bookRepo.searchByKeyword(keyword.toLowerCase(), pageable);
-	        } else if (categoryId != null) {
-	            result = bookRepo.findByCategoryId(categoryId, pageable);
-	        } else {
-	            result = bookRepo.findAll(pageable);
-	        }
-
-	        // build response with metadata
-	        var body = Map.of(
-	                "content", result.getContent(),
-	                "page", result.getNumber(),
-	                "size", result.getSize(),
-	                "totalElements", result.getTotalElements(),
-	                "totalPages", result.getTotalPages(),
-	                "last", result.isLast()
-	        );
-
-	        return ResponseEntity.ok(body);
-	    }
-	    
-	    */
-	 // ---------------------- SEARCH (non-paged) ----------------------
+	 	 // ---------------------- SEARCH (non-paged) ----------------------
 	    @GetMapping("/search")
 	    @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	    public ResponseEntity<List<Book>> searchBooks(@RequestParam("q") String q) {
-	    	logger.info("search book request has been initiated with keyword {}"+q);
+	    	logger.info("search book request has been initiated with keyword {}",q);
 	        List<Book> res = bookService.searchBooks(q);
 	        logger.info("search book request is successfull");
 	        

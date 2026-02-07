@@ -1,6 +1,5 @@
 package com.org.jayanth.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,14 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.org.jayanth.dto.CategoryDto;
 import com.org.jayanth.dtobestprac.MessageDto;
-import com.org.jayanth.entity.Category;
 import com.org.jayanth.service.CategoryService;
 
 @RestController

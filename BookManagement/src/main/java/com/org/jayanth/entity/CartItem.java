@@ -37,7 +37,6 @@ public class CartItem {
 
 	public CartItem() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public CartItem(Long id, Cart cart, Book book, Integer quantity, Double price, Double subTotal) {

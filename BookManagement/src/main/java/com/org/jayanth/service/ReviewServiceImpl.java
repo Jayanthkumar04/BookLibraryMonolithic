@@ -40,13 +40,14 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private OrderItemRepo orderItemRepo;
 
+    private static final String  USER_NOT_FOUND= "User not found | email={}";
     @Override
     public Review addReview(String email, ReviewDto dto) {
         logger.info("Add review initiated | email={} bookId={}", email, dto.getBookId());
 
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> {
-                    logger.error("User not found | email={}", email);
+                    logger.error(USER_NOT_FOUND, email);
                     return new UserNotFoundException("User not found");
                 });
 
@@ -78,8 +79,8 @@ public class ReviewServiceImpl implements ReviewService {
 
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> {
-                    logger.error("User not found | email={}", email);
-                    return new UserNotFoundException("User Not Found");
+                    logger.error(USER_NOT_FOUND, email);
+                	return new UserNotFoundException("User Not Found");
                 });
 
         Review review = reviewRepo.findById(reviewId)
@@ -107,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> {
-                    logger.error("User not found | email={}", email);
+                    logger.error(USER_NOT_FOUND, email);
                     return new UserNotFoundException("User Not Found");
                 });
 

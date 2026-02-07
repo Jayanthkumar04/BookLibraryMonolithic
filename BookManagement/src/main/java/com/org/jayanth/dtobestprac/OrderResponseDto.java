@@ -1,10 +1,6 @@
 package com.org.jayanth.dtobestprac;
-
 import java.time.LocalDateTime;
-import java.util.Date;
-
 import com.org.jayanth.entity.PaymentStatus;
-
 public class OrderResponseDto {
 
 	private Long id;
@@ -17,8 +13,7 @@ public class OrderResponseDto {
 
 	public OrderResponseDto() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 
 	public OrderResponseDto(Long id, LocalDateTime createdAt, PaymentStatus paymentStatus, Double totalAmount) {
 		super();

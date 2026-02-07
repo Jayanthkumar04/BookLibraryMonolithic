@@ -6,7 +6,6 @@ public class ForgotPasswordResponseDto {
 	private String url;
 	public ForgotPasswordResponseDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public ForgotPasswordResponseDto(String email, String url) {
 		super();

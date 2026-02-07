@@ -9,8 +9,7 @@ public class CartResponseDto {
     private List<CartItemDto> items;
 	public CartResponseDto() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 	public CartResponseDto(Long cartId, Double totalAmount, List<CartItemDto> items) {
 		super();
 		this.cartId = cartId;

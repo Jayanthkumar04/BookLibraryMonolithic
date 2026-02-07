@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -68,7 +67,6 @@ public class Order {
 
 	public Order() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 
@@ -80,23 +78,7 @@ public class Order {
 		this.shippedAt = shippedAt;
 	}
 
-	public Order(Long id, User user, List<OrderItem> orderItems, LocalDateTime orderDate, OrderStatus status,
-			Double totalAmount, PaymentStatus paymentStatus, String transactionId, String shippingAddress,
-			LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime shippedAt) {
-		super();
-		this.id = id;
-		this.user = user;
-		this.orderItems = orderItems;
-		this.orderDate = orderDate;
-		this.status = status;
-		this.totalAmount = totalAmount;
-		this.paymentStatus = paymentStatus;
-		this.transactionId = transactionId;
-		this.shippingAddress = shippingAddress;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-		this.shippedAt = shippedAt;
-	}
+	
 
 	public Long getId() {
 		return id;

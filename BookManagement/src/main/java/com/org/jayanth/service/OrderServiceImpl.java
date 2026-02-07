@@ -20,7 +20,9 @@ import com.org.jayanth.entity.OrderStatus;
 import com.org.jayanth.entity.PaymentStatus;
 import com.org.jayanth.entity.User;
 import com.org.jayanth.exceptions.AddressNotFoundException;
+import com.org.jayanth.exceptions.CancellationWindowExpiredException;
 import com.org.jayanth.exceptions.CartEmptyException;
+import com.org.jayanth.exceptions.InvalidOrderStateException;
 import com.org.jayanth.exceptions.OrderNotFoundException;
 import com.org.jayanth.exceptions.StockNotAvailableException;
 import com.org.jayanth.exceptions.UserNotFoundException;
@@ -61,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private BookRepo bookRepo;
+    
+    private static final String ORDER_NOT_FOUND  = "order not found";
 
     @Override
     public MessageDto placeOrder(String email, Long addressId) {
@@ -104,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
         order.setPaymentStatus(PaymentStatus.PAID);
 
         double total = 0;
-        String items = "\n";
+        StringBuilder items = new StringBuilder();
 
         for (CartItem item : cart.getCartItems()) {
 
@@ -118,7 +122,11 @@ public class OrderServiceImpl implements OrderService {
 
             bookService.updateBookStock(b.getId(), item.getQuantity());
 
-            items += "\nTitle: " + b.getTitle() + "\nAuthor: " + b.getAuthor() + "\nPrice per unit: " + b.getPrice() + "\nQuantity: " + item.getQuantity();
+            items.append("\n--------------------")
+            .append("\nTitle: ").append(b.getTitle())
+            .append("\nAuthor: ").append(b.getAuthor())
+            .append("\nPrice per unit: ").append(b.getPrice())
+            .append("\nQuantity: ").append(item.getQuantity());
 
             OrderItem oi = new OrderItem();
             oi.setOrder(order);
@@ -142,9 +150,9 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Order placed successfully | orderId={} totalAmount={}", saved.getId(), total);
 
         String subject = "Order Confirmed \n Thanks for placing order \n Your order details are below";
-        String body = "order id: " + order.getId() + "\norder Date:" + order.getOrderDate() + "\nItems: " + items + "\nTotal price" + order.getTotalAmount();
+        String body = "order id: " + order.getId() + "\norder Date:" + order.getOrderDate() + "\nItems: " + items.toString() + "\nTotal price" + order.getTotalAmount();
 
-        emailService.orderConfirmation(email, subject, body);
+        emailService.sendEmail(email, subject, body);
         logger.info("Order confirmation email sent | email={} orderId={}", email, saved.getId());
 
         return new MessageDto("order has been placed successfully");
@@ -164,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepo.findByIdAndUserEmail(orderId, email)
                 .orElseThrow(() -> {
                     logger.error("Order not found | orderId={} email={}", orderId, email);
-                    return new OrderNotFoundException("Order not found");
+                    return new OrderNotFoundException(ORDER_NOT_FOUND);
                 });
         logger.info("Get order by id successful | orderId={} email={}", orderId, email);
         return order;
@@ -185,7 +193,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> {
                     logger.error("Order not found for status update | orderId={}", orderId);
-                    return new OrderNotFoundException("Order not found");
+                    return new OrderNotFoundException(ORDER_NOT_FOUND);
                 });
 
         if (status.equals(OrderStatus.SHIPPED)) {
@@ -209,18 +217,19 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepo.findByIdAndUserEmail(orderId, email)
                 .orElseThrow(() -> {
                     logger.error("Order not found for cancellation | orderId={} email={}", orderId, email);
-                    return new OrderNotFoundException("Order not found");
+                    return new OrderNotFoundException(ORDER_NOT_FOUND);
                 });
 
-        if (order.getStatus() != OrderStatus.SHIPPED) {
+       
+        if (order.getStatus() != OrderStatus.SHIPPED){
             logger.error("Cannot cancel order, not shipped | orderId={} status={}", orderId, order.getStatus());
-            throw new RuntimeException("Only shipped orders can be cancelled");
+            throw new InvalidOrderStateException("Only shipped orders can be cancelled");
         }
 
         LocalDateTime shippedAt = order.getShippedAt();
         if (shippedAt == null || shippedAt.plusDays(2).isBefore(LocalDateTime.now())) {
             logger.error("Cancellation window expired | orderId={} shippedAt={}", orderId, shippedAt);
-            throw new RuntimeException("Cancellation window expired (2 days)");
+            throw new CancellationWindowExpiredException("Cancellation window expired (2 days)");
         }
 
         for (OrderItem item : order.getOrderItems()) {
@@ -235,7 +244,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderRepo.save(order);
 
-        emailService.sendOrderCancellation(email, "Order cancellation Confirmation", "");
+        emailService.sendEmail(email, "Order cancellation Confirmation", "");
         logger.info("Order cancelled successfully and email sent | orderId={} email={}", orderId, email);
 
         return saved;

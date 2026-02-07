@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +36,7 @@ public class AddressController {
 	    public ResponseEntity<Address> addAddress( @AuthenticationPrincipal(expression = "username") String email, @RequestBody AddressDto dto ) {
 		 
 		  logger.info("addRequest started {}",email);
-//		   String email = getEmail();
-		  Address address= addressService.addAddress(email, dto);
+	  Address address= addressService.addAddress(email, dto);
 			 logger.info("addRequest successfull");
 	        return ResponseEntity.status(HttpStatus.CREATED).body(address);
 	    }
@@ -54,7 +52,7 @@ public class AddressController {
 	 
 
 	 @GetMapping("/{id}")
-	    public ResponseEntity<Address> getAddresses(@AuthenticationPrincipal(expression = "username") String email,@PathVariable Long id) {
+	    public ResponseEntity<Address> getAddressesById(@AuthenticationPrincipal(expression = "username") String email,@PathVariable Long id) {
 		  
 		 logger.info("getAddress by id {} started for {}",id,email);
 		   Address address = addressService.getUserAddressesById(email,id);
@@ -67,7 +65,7 @@ public class AddressController {
 	                                    @RequestBody AddressDto dto,@AuthenticationPrincipal(expression = "username") String email
 	                                  ) {
 		 
-		    logger.info("update address request initiated for ",email );
+		    logger.info("update address request initiated for {} ",email );
 		    Address address = addressService.updateAddress(email, id, dto);
 		    logger.info("update address request successfull");
 		   return ResponseEntity.status(HttpStatus.OK).body(address);

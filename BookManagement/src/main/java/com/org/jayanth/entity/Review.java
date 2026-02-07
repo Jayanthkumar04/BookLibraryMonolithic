@@ -57,7 +57,6 @@ public class Review {
 
 	public Review() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Review(Long id, User user, Book book, int rating, String comment, LocalDateTime createdAt,

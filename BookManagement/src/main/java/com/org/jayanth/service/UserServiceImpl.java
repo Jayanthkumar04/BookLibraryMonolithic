@@ -195,9 +195,8 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public boolean validateTempPassword(String email, String password) {
-		User user = findByEmail(email);
-		if(passwordEncoder.matches(password, user.getPassword())) return true;
-		return false;
+	    User user = findByEmail(email);
+	    return passwordEncoder.matches(password, user.getPassword());
 	}
 
 	
@@ -223,7 +222,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public ForgotPasswordResponseDto forgotPassword(String email) {
 		
-		System.out.println("hii i am cmng  till here");
 		User user = userRepo.findByEmail(email)
 				.orElseThrow(()->new UserNotFoundException("user not found"));
 	
@@ -251,7 +249,7 @@ public class UserServiceImpl implements UserService{
 	    User user = userRepo.findByResetToken(token).orElseThrow(()->new IncorrectTokenException("INCORRECT TOKEN IS ENTERED"));
 
 	    if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-	        throw new RuntimeException("Reset token expired");
+	        throw new IncorrectTokenException("Reset token expired");
 	    }
 
 	    user.setPassword(passwordEncoder.encode(newPassword));

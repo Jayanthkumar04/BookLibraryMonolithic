@@ -23,23 +23,6 @@ public class EmailServiceImpl implements EmailService{
 		javaMailSender.send(message);
 		
 	}
-	@Override
-	public void orderConfirmation(String to, String subject, String body) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(to);
-		message.setText(body);
-		message.setSubject(subject);
-		javaMailSender.send(message);
-	}
-	@Override
-	public void sendOrderCancellation(String to, String subject, String body) {
-		
-		SimpleMailMessage message = new SimpleMailMessage();
-		
-		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(body+" please reset this is expire in 15 minutes from now");
-		javaMailSender.send(message);
-	}
+	
 
 }

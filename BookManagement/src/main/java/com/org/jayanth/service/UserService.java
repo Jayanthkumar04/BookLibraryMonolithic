@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.org.jayanth.dto.GenericSucessResponseDto;
 import com.org.jayanth.dto.RegisterUserDto;
-import com.org.jayanth.dto.UserDto;
 import com.org.jayanth.dto.UserUpdateDto;
 import com.org.jayanth.dtobestprac.ForgotPasswordResponseDto;
 import com.org.jayanth.dtobestprac.MessageDto;

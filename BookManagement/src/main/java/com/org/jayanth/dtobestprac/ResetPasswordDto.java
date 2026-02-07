@@ -8,8 +8,7 @@ public class ResetPasswordDto {
 
 	public ResetPasswordDto() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 
 	public ResetPasswordDto(String token, String newPassword) {
 		super();

@@ -1,11 +1,9 @@
 package com.org.jayanth.service;
 
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.org.jayanth.dto.LoginRequestDto;
 import com.org.jayanth.dto.RegisterUserDto;
-import com.org.jayanth.dto.UserDto;
 import com.org.jayanth.dtobestprac.AuthResponseDto;
 import com.org.jayanth.dtobestprac.RegistrationSuccessfullResponseDto;
 import com.org.jayanth.dtobestprac.UserInfoDto;
@@ -22,8 +19,6 @@ import com.org.jayanth.exceptions.UserNotFoundException;
 import com.org.jayanth.exceptions.WrongUserCredentialsException;
 import com.org.jayanth.helper.MaskingUtil;
 import com.org.jayanth.security.JwtUtil;
-import com.org.jayanth.service.AuthService;
-import com.org.jayanth.service.UserService;
 
 @Service
 public class AuthServiceImpl implements AuthService {

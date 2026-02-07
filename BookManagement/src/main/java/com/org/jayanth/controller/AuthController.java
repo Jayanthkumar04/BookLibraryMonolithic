@@ -37,34 +37,45 @@ public class AuthController {
     private UserService userService;
     
     
+    private static final String UNKNOWN = "unknown";
+    
     @PostMapping("/register")
     public  ResponseEntity<RegistrationSuccessfullResponseDto> registerUser(@Valid @RequestBody RegisterUserDto dto) {
        
-    	logger.info("Registration reqeust started for {}", MaskingUtil.maskEmail(dto.getEmail()));
+    	String maskedEmail = dto!=null && dto.getEmail() != null ?MaskingUtil.maskEmail(dto.getEmail()) : UNKNOWN;
+    	logger.info("Registration reqeust started for {}", maskedEmail);
     	RegistrationSuccessfullResponseDto response = authService.register(dto);
     
-    	logger.info("Registration successfull for user {}",MaskingUtil.maskEmail(dto.getEmail()));
+    	logger.info("Registration successfull for user {}",maskedEmail);
     	
     	return ResponseEntity.status(HttpStatus.CREATED).body(response);
     	
     }
     
     @PostMapping("/login")
-    public  ResponseEntity<AuthResponseDto>  loginUser(@Valid @RequestBody LoginRequestDto payload) {
-    	logger.info("login request started for user {}", MaskingUtil.maskEmail(payload.getEmail()));
-        AuthResponseDto response =  authService.login(payload);
-        logger.info("login sucessfull for user {}",MaskingUtil.maskEmail(payload.getEmail()));
+    public  ResponseEntity<AuthResponseDto>  loginUser(@Valid @RequestBody LoginRequestDto dto) {
+    	
+    	String maskedEmail = dto!=null && dto.getEmail() != null ?MaskingUtil.maskEmail(dto.getEmail()) : UNKNOWN;
+    	
+    	logger.info("login request started for user {}", maskedEmail);
+        AuthResponseDto response =  authService.login(dto);
+        logger.info("login sucessfull for user {}",maskedEmail);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     
     @PostMapping("/forgot-password")
-    public ResponseEntity<ForgotPasswordResponseDto> initiatePasswordReset(@Valid @RequestBody ForgotPasswordDto req) {
+    public ResponseEntity<ForgotPasswordResponseDto> initiatePasswordReset(@Valid @RequestBody ForgotPasswordDto dto) {
 
-    	logger.info("forgotPassword Request started for user {}",MaskingUtil.maskEmail(req.getEmail()));
-    	ForgotPasswordResponseDto dto = userService.forgotPassword(req.getEmail());
+    	String maskedEmail = dto!=null && dto.getEmail() != null ?MaskingUtil.maskEmail(dto.getEmail()) : UNKNOWN;
+
+    	if (dto == null || dto.getEmail() == null) {
+            throw new IllegalArgumentException("Email must be provided");
+        }
+    	logger.info("forgotPassword Request started for user {}",maskedEmail);
+    	ForgotPasswordResponseDto req = userService.forgotPassword(dto.getEmail());
         
-    	logger.info("forgotPassword Request is successfull for user {}",MaskingUtil.maskEmail(req.getEmail()));
-    	return ResponseEntity.status(HttpStatus.OK).body(dto);
+    	logger.info("forgotPassword Request is successfull for user {}",maskedEmail);
+    	return ResponseEntity.status(HttpStatus.OK).body(req);
     }
 
     @PostMapping("/reset-password")

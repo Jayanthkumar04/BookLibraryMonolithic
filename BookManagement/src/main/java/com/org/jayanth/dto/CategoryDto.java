@@ -2,7 +2,7 @@ package com.org.jayanth.dto;
 
 public class CategoryDto {
 
-	private Long Id;
+	private Long id;
 	private String name;
 	
 	private String description;
@@ -10,23 +10,22 @@ public class CategoryDto {
 	
 	public CategoryDto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 
 	public CategoryDto(Long id, String name, String description) {
 		super();
-		Id = id;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 	}
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getName() {

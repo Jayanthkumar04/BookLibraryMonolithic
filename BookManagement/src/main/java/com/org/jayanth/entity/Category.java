@@ -1,10 +1,6 @@
 package com.org.jayanth.entity;
-
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +28,6 @@ public class Category {
 
 	public Category() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public Category(Long id, String name, String description, List<Book> books) {
@@ -75,10 +70,6 @@ public class Category {
 		this.books = books;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "Category [id=" + id + ", name=" + name + ", description=" + description + ", books=" + books + "]";
-//	}
 	
 	
 	

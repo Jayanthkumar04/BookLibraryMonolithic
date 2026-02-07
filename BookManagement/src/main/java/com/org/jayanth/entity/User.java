@@ -1,8 +1,6 @@
 package com.org.jayanth.entity;
 
 import java.time.LocalDateTime;
-
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -69,22 +67,7 @@ public class User {
 		this.resetTokenExpiry = resetTokenExpiry;
 	}
 
-	public User(Long id, String name, String email, String password, Role role, boolean isActive, boolean isFirstLogin,
-			String resetToken, LocalDateTime resetTokenExpiry, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-		this.isActive = isActive;
-		this.isFirstLogin = isFirstLogin;
-		this.resetToken = resetToken;
-		this.resetTokenExpiry = resetTokenExpiry;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
+	
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
@@ -102,21 +85,9 @@ public class User {
 
 	public User() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 
-	public User(Long id, String name, String email, String password, Role role, boolean isActive,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-		this.isActive = isActive;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
+	
 
 	public Long getId() {
 		return id;

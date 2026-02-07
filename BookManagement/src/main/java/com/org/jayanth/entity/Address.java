@@ -70,29 +70,9 @@ public class Address {
 
 	public Address() {
 		super();
-		// TODO Auto-generated constructor stub
-	}
+		}
 
-	public Address(Long id, User user, String name, String phone, String addressLine1, String addressLine2, String city,
-			String state, String country, String postalCode, AddressType addressType, boolean isDefault,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.user = user;
-		this.name = name;
-		this.phone = phone;
-		this.addressLine1 = addressLine1;
-		this.addressLine2 = addressLine2;
-		this.city = city;
-		this.state = state;
-		this.country = country;
-		this.postalCode = postalCode;
-		this.addressType = addressType;
-		this.isDefault = isDefault;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
+	
 	public Long getId() {
 		return id;
 	}

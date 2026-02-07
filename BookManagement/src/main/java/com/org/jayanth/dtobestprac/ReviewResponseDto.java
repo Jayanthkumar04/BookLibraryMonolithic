@@ -6,7 +6,7 @@ public class ReviewResponseDto {
 	private String comments;
 	public ReviewResponseDto() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 	public ReviewResponseDto(String customerName, String comments) {
 		super();

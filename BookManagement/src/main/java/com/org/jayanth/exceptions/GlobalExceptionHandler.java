@@ -2,10 +2,8 @@ package com.org.jayanth.exceptions;
 
 import java.time.LocalDateTime;
 
-import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -174,6 +172,24 @@ public class GlobalExceptionHandler {
 		logger.warn("user has to change password before using resources");
 		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"Password is to be reset");
 		return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+		
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<ErrorDetails> handleInvalidOrderStateException(InvalidOrderStateException ex)
+	{
+		logger.warn("Only shipped orders can be cancelled");
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"Only shipped orders can be cancelled");
+		return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<ErrorDetails> handleCancellationWindowExpiredException(CancellationWindowExpiredException ex)
+	{
+		logger.warn("Cancellation window expired (2 days)");
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(),ex.getMessage(),"Cancellation window expired (2 days)");
+		return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
 		
 	}
 	
