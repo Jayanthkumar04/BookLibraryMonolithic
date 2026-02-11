@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.org.jayanth.dto.AddressDto;
 import com.org.jayanth.dtobestprac.MessageDto;
@@ -25,13 +26,10 @@ import com.org.jayanth.repo.UserRepo;
 
 @ExtendWith(MockitoExtension.class)
 public class AddressServiceImplTest {
-
     @Mock
     private AddressRepo addressRepo;
-
     @Mock
     private UserRepo userRepo;
-
     @InjectMocks
     private AddressServiceImpl service;
 
@@ -55,15 +53,15 @@ public class AddressServiceImplTest {
         Address savedAddress = new Address();
         savedAddress.setId(1L);
         savedAddress.setUser(user);
-
+        
         when(userRepo.findByEmail(any())).thenReturn(Optional.of(user));
         when(addressRepo.findByUserId(anyLong())).thenReturn(List.of());
         when(addressRepo.save(any(Address.class))).thenReturn(savedAddress);
-
+        
         Address result = service.addAddress("test@gmail.com", dto);
-
         assertNotNull(result);
         assertEquals(1L, result.getId());
+    
     }
 
     @Test
